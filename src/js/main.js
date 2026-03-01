@@ -7,13 +7,13 @@ import "../css/promptReveal.css";
 import "../css/pause.css";
 
 import { initEnvironment } from "./environment.js";
-import { initRouter }      from "./router.js";
+import { initRouter } from "./router.js";
 import { initStartScreen } from "./screens/startscreen.js";
 import { initOnboardingScreen } from "./screens/onboardingScreen.js";
-import { initGameScreen }  from "./screens/gameScreen.js";
+import { initGameScreen } from "./screens/gameScreen.js";
 import { initResultScreen } from "./screens/resultsScreen.js";
 import { initRosterScreen } from "./screens/rosterScreen.js";
-import { initPause }       from "./pause.js";
+import { initPause } from "./pause.js";
 import { initGlobalButtonSounds, playMP3 } from "./sound.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -28,10 +28,20 @@ document.addEventListener("DOMContentLoaded", () => {
   initResultScreen();
   initRosterScreen();
   initPause();
-  initGlobalButtonSounds('/audio/buttonClick.mp3', { volume: 0.8 });
+  initGlobalButtonSounds("/audio/buttonClick.mp3", { volume: 0.8 });
 
   // Start ambiance — loops forever throughout the entire game
-  playMP3('/audio/loading-ambiance.mp3', { loop: true, volume: 0.05, fadeIn: 1.5 });
+  document.addEventListener(
+    "click",
+    () => {
+      playMP3("/audio/loading-ambiance.mp3", {
+        loop: true,
+        volume: 0.05,
+        fadeIn: 1.5,
+      });
+    },
+    { once: true },
+  );
 
   // Remove loader — use a timeout fallback in case transitionend never fires
   requestAnimationFrame(() => {
@@ -41,9 +51,13 @@ document.addEventListener("DOMContentLoaded", () => {
       loader.classList.add("fade-out");
 
       // Primary: transitionend
-      loader.addEventListener("transitionend", () => {
-        loader.remove();
-      }, { once: true });
+      loader.addEventListener(
+        "transitionend",
+        () => {
+          loader.remove();
+        },
+        { once: true },
+      );
 
       // Fallback: if transition never fires (e.g. reduced motion), force remove
       setTimeout(() => {
