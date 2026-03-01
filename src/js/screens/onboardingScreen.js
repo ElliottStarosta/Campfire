@@ -2,7 +2,7 @@ import { state } from "../state.js";
 import { qs } from "../dom.js";
 import { startGame } from "./gameScreen.js";
 import { playFireTransition } from "./transitionScreen.js";
-
+import { playMP3 } from "../sound.js";
 const PROMPTS = [
   "If you had to eat only one food forever, what would it be and why?",
   "What's the scariest thing you've ever done willingly?",
@@ -30,20 +30,25 @@ function _handleJoin() {
   const name = nameInput?.value.trim();
 
   if (!name) {
-    gsap.fromTo(nameInput,
+    gsap.fromTo(
+      nameInput,
       { x: 0 },
-      { x: [-8, 8, -6, 6, -4, 0], duration: 0.4, ease: "none" }
+      { x: [-8, 8, -6, 6, -4, 0], duration: 0.4, ease: "none" },
     );
     nameInput?.focus();
     return;
   }
-
-  state.playerName     = name;
+  playMP3('/audio/buttonClick.mp3', { volume: 0.8 });
+  state.playerName = name;
   state.playerPronouns = qs("#player-pronouns")?.value ?? "they/them";
-  state.pendingPrompt  = PROMPTS[Math.floor(Math.random() * PROMPTS.length)];
+  state.pendingPrompt = PROMPTS[Math.floor(Math.random() * PROMPTS.length)];
 
   // Button press feedback
-  gsap.to(".btn-join", { scale: 0.95, duration: 0.1, yoyo: true, repeat: 1,
+  gsap.to(".btn-join", {
+    scale: 0.95,
+    duration: 0.1,
+    yoyo: true,
+    repeat: 1,
     onComplete: () => {
       // CRITICAL: hide onboarding immediately so the router doesn't
       // try to crossfade from it when goTo("game") is called later
@@ -55,12 +60,12 @@ function _handleJoin() {
           onComplete: () => {
             onboarding.classList.remove("active");
             onboarding.style.opacity = "";
-          }
+          },
         });
       }
 
       // Fire transition shows the question + countdown, then calls startGame
       playFireTransition(() => startGame(), state.pendingPrompt);
-    }
+    },
   });
 }
