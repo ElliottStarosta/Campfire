@@ -14,6 +14,7 @@ import { initGameScreen }  from "./screens/gameScreen.js";
 import { initResultScreen } from "./screens/resultsScreen.js";
 import { initRosterScreen } from "./screens/rosterScreen.js";
 import { initPause }       from "./pause.js";
+import { initGlobalButtonSounds, playMP3 } from "./sound.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const loader = document.getElementById("page-loader");
@@ -27,14 +28,27 @@ document.addEventListener("DOMContentLoaded", () => {
   initResultScreen();
   initRosterScreen();
   initPause();
+  initGlobalButtonSounds('/audio/buttonClick.mp3', { volume: 0.8 });
 
+  // Start ambiance — loops forever throughout the entire game
+  playMP3('/audio/loading-ambiance.mp3', { loop: true, volume: 0.05, fadeIn: 1.5 });
+
+  // Remove loader — use a timeout fallback in case transitionend never fires
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      if (loader) {
-        loader.classList.add("fade-out");
-        // Remove from DOM after transition so it can't block clicks
-        loader.addEventListener("transitionend", () => loader.remove(), { once: true });
-      }
+      if (!loader) return;
+
+      loader.classList.add("fade-out");
+
+      // Primary: transitionend
+      loader.addEventListener("transitionend", () => {
+        loader.remove();
+      }, { once: true });
+
+      // Fallback: if transition never fires (e.g. reduced motion), force remove
+      setTimeout(() => {
+        if (loader.parentNode) loader.remove();
+      }, 800); // slightly longer than the 0.6s CSS transition
     });
   });
 });

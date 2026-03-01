@@ -2,6 +2,7 @@ import { state } from "./state.js";
 import { qs } from "./dom.js";
 import { getAvatarSrc, makeAvatarImg } from "./avatars.js";
 import { hexAlpha } from "./dom.js";
+import { playMP3 } from "./sound.js";
 
 const FALLBACK_COLOR = "#acbc8e";
 
@@ -22,6 +23,12 @@ export function scrollBottom() {
 export function appendMessage(author, message, color, isSelf = false) {
   const feed = getFeed();
   if (!feed) return;
+
+  if (isSelf) {
+    playMP3('/audio/messageSend.mp3', { volume: 0.6 });
+  } else {
+    playMP3('/audio/messageReceive.mp3', { volume: 0.5 });
+  }
 
   const row = document.createElement("div");
   row.className = `msg-row ${isSelf ? "from-self" : "from-other"}`;

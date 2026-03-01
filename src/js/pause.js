@@ -3,6 +3,7 @@ import { qs } from "./dom.js";
 import { resumeTimer, startTimer, stopTimer } from "./timer.js";
 import { startAILoop, stopAILoop } from "./aiOrchestrator.js";
 import { goTo } from "./router.js";
+import {playMP3} from "./sound.js";
 
 let _paused = false;
 
@@ -41,6 +42,8 @@ export function togglePause() {
 
 export function pause() {
   if (_paused || state.phase !== "game" || state.gameEnded) return;
+  playMP3('/audio/buttonClick.mp3', { volume: 0.8 });
+
   _paused = true;
   state.gamePaused = true;
 

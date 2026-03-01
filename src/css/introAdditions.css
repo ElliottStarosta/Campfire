@@ -532,7 +532,7 @@
 
 .cmod-style-text {
   font-style: italic;
-  color: var(--text-muted);
+  color: var(--text-dim);
 }
 
 #char-modal-close {
@@ -541,9 +541,9 @@
   right: var(--sp-4);
   width: 32px; height: 32px;
   border-radius: var(--r-full);
-  background: var(--bg-raised);
+  background: var(--c-cream-3);
   border: 1px solid var(--border-faint);
-  color: var(--text-ghost);
+  color: var(--bg-void);
   font-size: 1rem;
   cursor: pointer;
   display: flex;

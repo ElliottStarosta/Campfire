@@ -1,5 +1,6 @@
 import { state } from './state.js';
 import { qs }    from './dom.js';
+import { playMP3 } from './sound.js';
 
 const TOTAL_DASH = 125.6;
 
@@ -62,4 +63,18 @@ function _render(fillEl, digitsEl, wrapEl) {
       { opacity: 0.4 },
       { opacity: 1, duration: 0.3, yoyo: true, repeat: 1 });
   }
+
+  if (state.timeLeft === 30) {
+    playMP3('/audio/30Seconds.mp3', { volume: 0.25 });
+  }
+  if (state.timeLeft === 10) {
+    playMP3('/audio/10Seconds.mp3', { volume: 0.65 });
+  }
+  
+
+ // Tick in last 10 seconds
+if (state.timeLeft <= 10 && state.timeLeft > 0) {
+  const isLast = state.timeLeft === 1;
+  playMP3(isLast ? '/audio/finalTick.mp3' : '/audio/buttonClick.mp3', { volume: isLast ? 0.9 : 0.4 });
+}
 }

@@ -3,6 +3,7 @@ import { goTo } from "../router.js";
 import { qs } from "../dom.js";
 import { makeAvatarImg } from "../avatars.js";
 import { startGame } from "./gameScreen.js";
+import { playMP3 } from "../sound.js";
 
 /**
  * @param {'win'|'lose'|'kicked'} outcome
@@ -10,6 +11,15 @@ import { startGame } from "./gameScreen.js";
  */
 export function showResult(outcome, votesReceived = 0) {
   goTo("result");
+
+  const resultSounds = {
+    win: "/audio/win.mp3",
+    lose: "/audio/lose.mp3",
+    kicked: "/audio/lose.mp3",
+  };
+  if (resultSounds[outcome]) {
+    playMP3(resultSounds[outcome], { volume: 0.9, fadeIn: 0.3 });
+  }
 
   const iconWrap = qs("#result-icon");
   const heading = qs("#result-heading");
@@ -19,10 +29,10 @@ export function showResult(outcome, votesReceived = 0) {
 
   const iconSrc =
     {
-      win: "/icons/win.png",
-      lose: "/icons/caught.png",
-      kicked: "/icons/kicked.png",
-    }[outcome] ?? "/avatars/default.png";
+      win: "/assets/icons/win.png",
+      lose: "/assets/icons/caught.png",
+      kicked: "/assets/icons/kicked.png",
+    }[outcome] ?? "/assets/avatars/wilson.png";
 
   if (iconWrap) {
     iconWrap.innerHTML = "";
@@ -142,4 +152,3 @@ export function initResultScreen() {
     goTo("onboarding");
   });
 }
-

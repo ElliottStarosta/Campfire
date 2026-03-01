@@ -9,8 +9,8 @@ export const state = {
   promptText: "",
   pendingPrompt: null, // set by onboarding so transition can show it
   playerMsgCount: 0,
-  timeLeft: 90,
-  totalTime: 90,
+  timeLeft: 2,
+  totalTime: 2,
   gameEnded: false,
   gamePaused: false,
   // Timers

@@ -3,8 +3,10 @@ import { goTo } from "../router.js";
 import { qs, sleep, hexAlpha, safeId } from "../dom.js";
 import { getAvatarSrc, makeAvatarImg } from "../avatars.js";
 import { showResult } from "./resultsScreen.js";
+import { playMP3 } from "../sound.js";
 
 export function startVoting() {
+  playMP3('/audio/votingStart.mp3', { volume: 0.9 });  
   _buildVotingGrid();
   goTo("voting");
   _runVoteSequence();
@@ -66,10 +68,11 @@ async function _runVoteSequence() {
     if (!target) continue;
 
     target.votes++;
+    playMP3('/audio/voteCast.mp3', { volume: 0.7 });
 
     if (log) {
       gsap.fromTo(log, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.35 });
-      log.innerHTML = `<strong>${_esc(voter.name)}</strong> pointed at <strong>${_esc(target.name)}</strong>`;
+log.innerHTML = `<strong>${_esc(voter.name)}</strong>&nbsp;pointed at&nbsp;<strong>${_esc(target.name)}</strong>`;
     }
 
     const countEl = qs(`#vcount-${safeId(target.name)}`);
