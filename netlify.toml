@@ -1,0 +1,17 @@
+[build]
+  command = "vite build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+# Redirect /api/chat → the Netlify function
+# so the client code doesn't need to change URLs
+[[redirects]]
+  from = "/api/chat"
+  to = "/.netlify/functions/chat"
+  status = 200
+
+# SPA fallback — lets Vite's router handle all routes
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

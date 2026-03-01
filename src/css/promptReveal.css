@@ -1,0 +1,24 @@
+#prompt-reveal {
+  gap: 0; /* override the gap; we'll use margins instead */
+  padding: 0 var(--sp-6);
+}
+
+.reveal-eyebrow {
+  margin-bottom: var(--sp-4);
+}
+
+.reveal-prompt {
+  margin-bottom: var(--sp-5);
+}
+
+.reveal-divider {
+  margin-bottom: var(--sp-8);
+}
+
+/* The big countdown number — pushed well below the question */
+.reveal-countdown {
+  margin-top: var(--sp-6);
+  font-size: var(--text-5xl);
+  /* subtle warm glow so it doesn't feel disconnected */
+  filter: drop-shadow(0 0 28px rgba(239,181,118,0.35));
+}

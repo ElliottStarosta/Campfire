@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Seventh One</title>
+    <meta
+      name="description"
+      content="Six AIs. One human. One conversation. Can you blend in?"
+    />
+
+    <!-- GSAP — must be global before any module runs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <style>
+      html,
+      body {
+        overflow: hidden;
+      }
+
+      /* Inline critical styles — paint instantly before any CSS loads */
+      #page-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        background: #0b0804;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        overflow: hidden;
+        transition: opacity 0.6s ease;
+      }
+
+      #page-loader.fade-out {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .loader-flame {
+        width: 48px;
+        height: 64px;
+        position: relative;
+      }
+
+      .loader-flame::before,
+      .loader-flame::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        border-radius: 50% 50% 30% 30% / 60% 60% 40% 40%;
+        animation: loaderFlicker 0.9s ease-in-out infinite alternate;
+      }
+
+      .loader-flame::before {
+        width: 48px;
+        height: 64px;
+        left: 0;
+        background: radial-gradient(
+          ellipse at 50% 85%,
+          rgba(255, 200, 80, 0.95) 0%,
+          rgba(233, 149, 102, 0.85) 35%,
+          rgba(185, 89, 85, 0.5) 65%,
+          transparent 100%
+        );
+      }
+
+      .loader-flame::after {
+        width: 24px;
+        height: 36px;
+        left: 12px;
+        background: radial-gradient(
+          ellipse at 50% 75%,
+          rgba(255, 248, 200, 1) 0%,
+          rgba(255, 210, 80, 0.9) 30%,
+          transparent 100%
+        );
+        animation-duration: 0.65s;
+      }
+
+      @keyframes loaderFlicker {
+        0% {
+          transform: scaleX(1) scaleY(1) rotate(-1deg);
+        }
+        50% {
+          transform: scaleX(0.91) scaleY(1.05) rotate(1.5deg);
+        }
+        100% {
+          transform: scaleX(1.05) scaleY(0.97) rotate(-0.5deg);
+        }
+      }
+
+      .loader-text {
+        font-family: Georgia, serif;
+        font-style: italic;
+        font-size: 0.82rem;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: rgba(239, 181, 118, 0.5);
+        animation: loaderPulse 1.8s ease-in-out infinite;
+      }
+
+      @keyframes loaderPulse {
+        0%,
+        100% {
+          opacity: 0.5;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      /* Prevent flash of unstyled content behind loader */
+      body {
+        background: #0b0804;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="page-loader">
+      <div class="loader-flame"></div>
+      <span class="loader-text">Lighting the fire…</span>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+       ENVIRONMENT LAYERS
+       ══════════════════════════════════════════════════════ -->
+    <canvas id="env-canvas" aria-hidden="true"></canvas>
+    <div class="grain-overlay" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+    <canvas id="ember-canvas" aria-hidden="true"></canvas>
+    <div class="trees-layer" aria-hidden="true"></div>
+
+    <!-- Campfire -->
+    <div class="campfire-unit" aria-hidden="true">
+      <div class="flame-system">
+        <div class="flame flame-left"></div>
+        <div class="flame flame-right"></div>
+        <div class="flame flame-xl"></div>
+        <div class="flame flame-lg"></div>
+        <div class="flame flame-core"></div>
+      </div>
+      <div class="fire-logs">
+        <svg
+          viewBox="0 0 120 28"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <ellipse cx="60" cy="20" rx="58" ry="7" fill="#1a0f08" />
+          <rect
+            x="8"
+            y="14"
+            width="55"
+            height="10"
+            rx="5"
+            fill="#3d1f0e"
+            transform="rotate(-8 8 14)"
+          />
+          <rect
+            x="58"
+            y="14"
+            width="55"
+            height="10"
+            rx="5"
+            fill="#2e1709"
+            transform="rotate(8 58 14)"
+          />
+          <rect
+            x="28"
+            y="12"
+            width="65"
+            height="9"
+            rx="4"
+            fill="#4a2512"
+            transform="rotate(2 28 12)"
+          />
+          <ellipse cx="38" cy="20" rx="5" ry="4" fill="#ff6600" opacity="0.3" />
+          <ellipse
+            cx="82"
+            cy="20"
+            rx="4"
+            ry="3"
+            fill="#ff4400"
+            opacity="0.25"
+          />
+        </svg>
+      </div>
+      <div class="fire-ground-glow"></div>
+    </div>
+    <div class="fire-glow-halo" aria-hidden="true"></div>
+
+    <!-- ══════════════════════════════════════════════════════
+       START SCREEN
+       ══════════════════════════════════════════════════════ -->
+    <div id="start-screen" class="screen">
+      <p class="start-eyebrow">A game of hidden identity</p>
+      <h1 class="start-title">The Seventh One</h1>
+      <p class="start-tagline">Six voices. One is human. Will they find you?</p>
+      <div class="start-rules" role="list">
+        <span class="rule-pill" role="listitem">6 AIs + you</span>
+        <span class="rule-pill" role="listitem">90 seconds</span>
+        <span class="rule-pill" role="listitem">3 messages minimum</span>
+        <span class="rule-pill" role="listitem">blend in to win</span>
+      </div>
+      <button id="btn-gather" class="btn-gather">Gather Around</button>
+      <button
+        id="btn-roster"
+        class="btn-roster"
+        aria-label="View all characters"
+      >
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"
+          />
+        </svg>
+        Meet the cast
+      </button>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+       ONBOARDING SCREEN
+       ══════════════════════════════════════════════════════ -->
+    <div id="onboarding-screen" class="screen">
+      <div class="onboarding-card">
+        <h2 class="card-title">Pull up a log</h2>
+        <p class="card-sub">
+          The AIs will try to sniff you out.<br />Stay natural. Blend in.
+        </p>
+
+        <div class="form-field">
+          <label for="player-name">Your name</label>
+          <input
+            type="text"
+            id="player-name"
+            placeholder="e.g. Jamie"
+            maxlength="24"
+            autocomplete="off"
+            spellcheck="false"
+          />
+        </div>
+
+        <div class="form-field">
+          <label for="player-pronouns">Pronouns</label>
+          <div class="select-wrap">
+            <select id="player-pronouns">
+              <option value="he/him">he / him</option>
+              <option value="she/her">she / her</option>
+              <option value="they/them">they / them</option>
+              <option value="prefer not to say">prefer not to say</option>
+            </select>
+          </div>
+        </div>
+
+        <button id="btn-join" class="btn-join">Join the fire</button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+       PROMPT REVEAL OVERLAY
+       ══════════════════════════════════════════════════════ -->
+    <div id="prompt-reveal" aria-live="assertive">
+      <p class="reveal-eyebrow">Tonight's question</p>
+      <p id="reveal-prompt-text" class="reveal-prompt"></p>
+      <div class="reveal-divider"></div>
+      <div id="reveal-countdown" class="reveal-countdown">3</div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+       GAME SCREEN
+       ══════════════════════════════════════════════════════ -->
+    <div id="game-screen" class="screen">
+      <header class="game-header">
+        <div
+          id="players-strip"
+          class="players-strip"
+          aria-label="Participants"
+        ></div>
+
+        <div class="header-topic">
+          <span class="topic-label">Topic</span>
+          <span id="topic-text" class="topic-text">…</span>
+        </div>
+
+        <div id="timer-wrap" class="timer-wrap" aria-label="Time remaining">
+          <div class="timer-ring">
+            <svg viewBox="0 0 48 48">
+              <circle class="timer-ring-track" cx="24" cy="24" r="20" />
+              <circle
+                id="timer-ring-fill"
+                class="timer-ring-fill"
+                cx="24"
+                cy="24"
+                r="20"
+              />
+            </svg>
+            <div id="timer-digits" class="timer-digits">1:30</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="chat-column">
+        <div
+          id="chat-feed"
+          class="chat-feed"
+          role="log"
+          aria-live="polite"
+          aria-label="Chat messages"
+        ></div>
+
+        <div class="chat-input-bar">
+          <div class="input-shell">
+            <input
+              type="text"
+              id="chat-input"
+              class="chat-input"
+              placeholder="Say something around the fire…"
+              maxlength="280"
+              autocomplete="off"
+              spellcheck="false"
+              aria-label="Your message"
+              disabled
+            />
+            <button id="btn-send" class="btn-send" aria-label="Send" disabled>
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+              </svg>
+            </button>
+          </div>
+          <p id="msg-counter" class="msg-counter warn" aria-live="polite">
+            Send at least 3 messages to stay in the game
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+       VOTING SCREEN
+       ══════════════════════════════════════════════════════ -->
+    <div id="voting-screen" class="screen">
+      <div class="voting-header">
+        <h2 class="voting-title">Who's Human?</h2>
+        <p class="voting-sub">The fire reveals all secrets…</p>
+      </div>
+      <div id="vote-grid" class="vote-grid" role="list"></div>
+      <div id="vote-log" class="vote-log" aria-live="polite">
+        Gathering around the embers…
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+       RESULT SCREEN
+       ══════════════════════════════════════════════════════ -->
+    <div id="result-screen" class="screen">
+      <div id="result-icon" class="result-icon-wrap" aria-hidden="true"></div>
+      <h2 id="result-heading" class="result-heading win">You Blended In</h2>
+      <p id="result-desc" class="result-desc"></p>
+      <div id="result-stats" class="result-stats">
+        <div class="stat-block">
+          <div id="stat-votes" class="stat-num">0</div>
+          <div class="stat-lbl">Votes against you</div>
+        </div>
+        <div class="stat-block">
+          <div id="stat-msgs" class="stat-num">0</div>
+          <div class="stat-lbl">Messages sent</div>
+        </div>
+      </div>
+      <button id="btn-again" class="btn-again">Try Again</button>
+    </div>
+
+    <div id="fire-transition" aria-hidden="true">
+      <div class="ft-vignette"></div>
+      <div class="ft-glow"></div>
+
+      <!-- Ember particles -->
+      <div class="ft-ember">
+        <div class="ft-ember-particle" style="left: -20px"></div>
+        <div class="ft-ember-particle" style="left: 0px"></div>
+        <div class="ft-ember-particle" style="left: 20px"></div>
+        <div class="ft-ember-particle" style="left: -10px"></div>
+        <div class="ft-ember-particle" style="left: 10px"></div>
+        <div class="ft-ember-particle" style="left: -30px"></div>
+        <div class="ft-ember-particle" style="left: 30px"></div>
+        <div class="ft-ember-particle" style="left: -5px"></div>
+        <div class="ft-ember-particle" style="left: 5px"></div>
+        <div class="ft-ember-particle" style="left: -15px"></div>
+        <div class="ft-ember-particle" style="left: 15px"></div>
+        <div class="ft-ember-particle" style="left: -25px"></div>
+      </div>
+
+      <!-- The campfire that zooms in -->
+      <div class="ft-campfire">
+        <div class="ft-flame-system">
+          <div class="ft-flame ft-flame-left"></div>
+          <div class="ft-flame ft-flame-right"></div>
+          <div class="ft-flame ft-flame-xl"></div>
+          <div class="ft-flame ft-flame-lg"></div>
+          <div class="ft-flame ft-flame-core"></div>
+        </div>
+        <div class="ft-logs">
+          <svg
+            viewBox="0 0 180 38"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <ellipse cx="90" cy="28" rx="88" ry="9" fill="#1a0f08" />
+            <rect
+              x="10"
+              y="18"
+              width="80"
+              height="14"
+              rx="7"
+              fill="#3d1f0e"
+              transform="rotate(-8 10 18)"
+            />
+            <rect
+              x="90"
+              y="18"
+              width="80"
+              height="14"
+              rx="7"
+              fill="#2e1709"
+              transform="rotate(8 90 18)"
+            />
+            <rect
+              x="40"
+              y="16"
+              width="100"
+              height="12"
+              rx="6"
+              fill="#4a2512"
+              transform="rotate(2 40 16)"
+            />
+            <ellipse
+              cx="55"
+              cy="28"
+              rx="7"
+              ry="5"
+              fill="#ff6600"
+              opacity="0.3"
+            />
+            <ellipse
+              cx="125"
+              cy="28"
+              rx="6"
+              ry="4"
+              fill="#ff4400"
+              opacity="0.25"
+            />
+          </svg>
+        </div>
+        <div class="ft-ground-glow"></div>
+      </div>
+
+      <!-- Text that appears during zoom -->
+      <div class="ft-text-wrap">
+        <div class="ft-title">Campfire</div>
+        <div class="ft-sub">Gather Around</div>
+      </div>
+    </div>
+
+    <div id="roster-overlay" aria-label="Character roster">
+      <button id="roster-close" class="roster-close" aria-label="Close roster">
+        ✕
+      </button>
+      <div class="roster-panel">
+        <div class="roster-title-wrap">
+          <span class="roster-eyebrow">Who might you meet</span>
+          <h2 class="roster-title">Around the Fire</h2>
+          <p class="roster-sub">Click any character to learn more</p>
+        </div>
+        <div class="rcar-wrap">
+          <div id="rcar-track" class="rcar-track"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="char-modal-backdrop">
+      <div id="char-modal">
+        <button id="char-modal-close" aria-label="Close">✕</button>
+        <div class="cmod-header">
+          <div id="cmod-avatar"></div>
+          <div class="cmod-header-text">
+            <div id="cmod-name"></div>
+            <div id="cmod-tags"></div>
+          </div>
+        </div>
+        <div class="cmod-body">
+          <div class="cmod-section">
+            <span class="cmod-label">Personality</span>
+            <p id="cmod-personality" class="cmod-text"></p>
+          </div>
+          <div class="cmod-section">
+            <span class="cmod-label">Speaks like</span>
+            <p id="cmod-style" class="cmod-text cmod-style-text"></p>
+          </div>
+          <div class="cmod-section">
+            <span class="cmod-label">Backstory</span>
+            <p id="cmod-backstory" class="cmod-text"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="pause-overlay" aria-label="Game paused">
+      <div class="pause-panel">
+        <div class="pause-badge">
+          <span class="pause-badge-bar"></span>
+          <span class="pause-badge-text">Paused</span>
+          <span class="pause-badge-bar"></span>
+        </div>
+
+        <h2 class="pause-title">The Seventh One</h2>
+        <p class="pause-topic" id="pause-topic-text"></p>
+
+        <div class="pause-divider"></div>
+
+        <div class="pause-menu">
+          <button class="pause-btn pause-btn--primary" id="pause-resume">
+            <span class="pause-btn-icon">▶</span>
+            <span class="pause-btn-label">Resume</span>
+            <span class="pause-btn-hint">ESC</span>
+          </button>
+          <button class="pause-btn" id="pause-restart">
+            <span class="pause-btn-icon">↺</span>
+            <span class="pause-btn-label">Restart</span>
+            <span class="pause-btn-hint"></span>
+          </button>
+          <button class="pause-btn" id="pause-quit">
+            <span class="pause-btn-icon">⏻</span>
+            <span class="pause-btn-label">Quit to Menu</span>
+            <span class="pause-btn-hint"></span>
+          </button>
+        </div>
+
+        <div class="pause-stats">
+          <div class="pause-stat">
+            <span class="pause-stat-val" id="pause-stat-time">—</span>
+            <span class="pause-stat-lbl">Time Left</span>
+          </div>
+          <div class="pause-stat-divider"></div>
+          <div class="pause-stat">
+            <span class="pause-stat-val" id="pause-stat-msgs">—</span>
+            <span class="pause-stat-lbl">Messages</span>
+          </div>
+          <div class="pause-stat-divider"></div>
+          <div class="pause-stat">
+            <span class="pause-stat-val" id="pause-stat-players">—</span>
+            <span class="pause-stat-lbl">Players</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/js/main.js"></script>
+  </body>
+</html>
