@@ -29,12 +29,13 @@ export function initGameScreen() {
  * Onboarding is already hidden. Just show game screen and start.
  */
 export async function startGame() {
+  const savedPrompt = state.pendingPrompt;
+
   resetGame();
   clearFeed();
 
   // Use the prompt that was already shown in the transition
-  state.promptText =
-    state.pendingPrompt || "What's the weirdest dream you've ever had?";
+  state.promptText = savedPrompt || "What's the weirdest dream you've ever had?";
   state.pendingPrompt = null;
 
   state.chatRoom = new ChatRoom(state.promptText);
