@@ -1,0 +1,121 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@400;500&display=swap");
+
+:root {
+  --c-teal-1: #598e81;
+  --c-teal-2: #699582;
+  --c-teal-3: #84a48c;
+  --c-sage-1: #acbc8e;
+  --c-sage-2: #bcc596;
+  --c-sage-3: #b9bca1;
+  --c-sage-4: #c1c2a3;
+  --c-sage-5: #dcd8ab;
+  --c-cream-1: #f6e4a9;
+  --c-cream-2: #f6e4a9;
+  --c-cream-3: #f2d694;
+  --c-gold-1: #eed388;
+  --c-gold-2: #f9d49d;
+  --c-amber-1: #efb576;
+  --c-amber-2: #f4be82;
+  --c-amber-3: #f6c293;
+  --c-orange-1: #e99566;
+  --c-orange-2: #eda376;
+  --c-orange-3: #f0a989;
+  --c-rust-1: #d96a59;
+  --c-rust-2: #e38069;
+  --c-rust-3: #e3a083;
+  --c-rust-4: #d0947a;
+  --c-red-1: #b95955;
+  --c-red-2: #cc7065;
+  --c-red-3: #d3967a;
+  --c-maroon-1: #924a4a;
+  --c-maroon-2: #8c4647;
+  --c-maroon-3: #a76257;
+  --c-maroon-4: #a36057;
+
+  --bg-void: #0b0804;
+  --bg-deep: #110d08;
+  --bg-base: #17100b;
+  --bg-raised: #1e1510;
+  --bg-surface: #261b14;
+  --bg-elevated: #2e2118;
+  --bg-glass: rgba(30, 21, 16, 0.75);
+  --bg-glass-light: rgba(238, 211, 136, 0.06);
+
+  --fire-core: #fff4c2;
+  --fire-inner: #ffd05b;
+  --fire-mid: var(--c-amber-1);
+  --fire-outer: var(--c-orange-1);
+  --fire-edge: var(--c-rust-1);
+  --fire-smoke: rgba(100, 80, 60, 0.4);
+
+  --text-brightest: var(--c-cream-1);
+  --text-bright: var(--c-gold-1);
+  --text-mid: var(--c-amber-2);
+  --text-dim: var(--c-amber-1);
+  --text-muted: rgba(239, 181, 118, 0.45);
+  --text-ghost: rgba(239, 181, 118, 0.22);
+
+  --accent-warm: var(--c-amber-1);
+  --accent-fire: var(--c-rust-1);
+  --accent-cool: var(--c-teal-1);
+  --accent-sage: var(--c-sage-1);
+
+  --border-faint: rgba(239, 181, 118, 0.09);
+  --border-subtle: rgba(239, 181, 118, 0.16);
+  --border-mid: rgba(239, 181, 118, 0.28);
+  --border-glow: rgba(233, 149, 102, 0.45);
+
+  --font-display: "Cinzel Decorative", serif;
+  --font-body: "Crimson Pro", Georgia, serif;
+  --font-mono: "DM Mono", monospace;
+
+  --text-xs: 0.72rem;
+  --text-sm: 0.85rem;
+  --text-base: 1rem;
+  --text-lg: 1.15rem;
+  --text-xl: 1.35rem;
+  --text-2xl: 1.7rem;
+  --text-3xl: 2.2rem;
+  --text-4xl: 3rem;
+  --text-5xl: 4.2rem;
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  --r-sm: 6px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 26px;
+  --r-2xl: 36px;
+  --r-full: 9999px;
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 24px rgba(0, 0, 0, 0.65);
+  --shadow-lg: 0 8px 48px rgba(0, 0, 0, 0.75);
+  --shadow-fire:
+    0 0 40px rgba(233, 149, 102, 0.18), 0 0 80px rgba(233, 149, 102, 0.08);
+  --shadow-glow: 0 0 20px rgba(238, 211, 136, 0.12);
+  --shadow-inner: inset 0 2px 8px rgba(0, 0, 0, 0.4);
+
+  --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --t-fast: 0.15s;
+  --t-base: 0.28s;
+  --t-slow: 0.5s;
+
+  --z-bg: -1;
+  --z-base: 1;
+  --z-raised: 10;
+  --z-overlay: 100;
+  --z-modal: 200;
+  --z-top: 300;
+}
