@@ -77,3 +77,18 @@ input, textarea {
   white-space: nowrap;
   border: 0;
 }
+
+.intro_img {
+  background-image: url("assets/intro.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  height: 100vh;
+}
+
+.intro_text {
+  text-align: center;
+  position: relative;
+
+}
