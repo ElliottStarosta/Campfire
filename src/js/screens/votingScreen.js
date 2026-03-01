@@ -182,8 +182,8 @@ async function _revealResult(log) {
   const players = state.votingPlayers;
   const maxVotes = Math.max(...players.map((p) => p.votes));
   const humanPl = players.find((p) => p.isHuman);
-  const humanLoses = (humanPl?.votes ?? 0) === maxVotes;
-
+  const humanLoses = (humanPl?.votes ?? 0) === maxVotes && 
+    players.filter(p => p.votes === maxVotes).length === 1;
   // Dim non-leaders
   players.forEach((p) => {
     const card = qs(`#vcard-${safeId(p.name)}`);
