@@ -7,7 +7,7 @@ import {playMP3} from "./sound.js";
 
 let _paused = false;
 
-/* ── Public API ─────────────────────────────────────────── */
+/*  Public API  */
 
 export function isPaused() {
   return _paused;
@@ -66,7 +66,7 @@ export function resume() {
   _forceResume();
 }
 
-/* ── Internal ────────────────────────────────────────────── */
+/*  Internal  */
 
 function _forceResume() {
   _paused = false;

@@ -8,7 +8,7 @@ let _isOpen    = false;
 let _modalOpen = false;
 let _personalities = [];
 
-// ── Init ──────────────────────────────────────────────────
+//  Init 
 export function initRosterScreen() {
   qs("#btn-roster")?.addEventListener("click", openRoster);
   qs("#roster-close")?.addEventListener("click", closeRoster);
@@ -31,7 +31,7 @@ export function initRosterScreen() {
   _buildCarousel();
 }
 
-// ── Open / Close roster ───────────────────────────────────
+//  Open / Close roster 
 export function openRoster() {
   if (_isOpen) return;
   _isOpen = true;
@@ -72,7 +72,7 @@ export function closeRoster() {
     }, "-=0.1");
 }
 
-// ── Build carousel ────────────────────────────────────────
+//  Build carousel 
 function _buildCarousel() {
   const track = qs("#rcar-track");
   if (!track) return;
@@ -184,7 +184,7 @@ function _initInfiniteScroll(track, inner) {
   track._stopLoop  = () => { cancelAnimationFrame(rafId); rafId = null; };
   track._startLoop = () => { if (!rafId) rafId = requestAnimationFrame(loop); };
 
-  // ── Mouse drag ──────────────────────────────────────────
+  //  Mouse drag 
   track.addEventListener("mousedown", (e) => {
     e.preventDefault();
     isDragging      = true;
@@ -242,7 +242,7 @@ function _initInfiniteScroll(track, inner) {
     }
   });
 
-  // ── Touch ───────────────────────────────────────────────
+  //  Touch 
   let touchStartX      = 0;
   let touchStartOffset = 0;
 
@@ -264,16 +264,21 @@ function _initInfiniteScroll(track, inner) {
     setTimeout(() => { autoScroll = true; }, 800);
   });
 
-  // ── Prevent card click when dragged ────────────────────
+  //  Prevent card click when dragged 
   track.addEventListener("click", (e) => {
-    if (hasDragged) {
-      e.stopImmediatePropagation();
-      hasDragged = false;
-    }
-  }, true);
+  if (hasDragged) {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    hasDragged = false;
+  }
+}, true);
+
+window.addEventListener("mouseup", () => {
+  setTimeout(() => { hasDragged = false; }, 50);
+});
 }
 
-// ── Modal ─────────────────────────────────────────────────
+//  Modal 
 function _openModal(index) {
   if (_modalOpen) return;
   _modalOpen = true;

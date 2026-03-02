@@ -17,7 +17,7 @@ async function _runTransition(onComplete, promptText) {
 
   overlay.classList.add("active");
 
-  // ── Reset base elements ───────────────────────────────────
+  //  Reset base elements 
   gsap.set(overlay, { opacity: 0 });
   gsap.set(".ft-vignette", { opacity: 0 });
   gsap.set(".ft-campfire", {
@@ -31,7 +31,7 @@ async function _runTransition(onComplete, promptText) {
   // Hide the original text-wrap — we use our own top-anchored container
   gsap.set(".ft-text-wrap", { opacity: 0, pointerEvents: "none" });
 
-  // ── Build top-text container (question + countdown sit ABOVE fire) ──
+  //  Build top-text container (question + countdown sit ABOVE fire) 
   // Reuse elements between games if they already exist
   let topBox = overlay.querySelector(".ft-top-box");
   let questionEl = overlay.querySelector(".ft-q");
@@ -123,7 +123,7 @@ async function _runTransition(onComplete, promptText) {
 
   _animateEmbers();
 
-  // ── Phase 1: Fire rises ───────────────────────────────────
+  //  Phase 1: Fire rises 
   await new Promise((resolve) => {
     gsap
       .timeline({ onComplete: resolve })
@@ -152,7 +152,7 @@ async function _runTransition(onComplete, promptText) {
   });
 
   playMP3("/audio/questionReveal.mp3", { volume: 0.9 });
-  // ── Phase 2: Question fades in above the fire ─────────────
+  //  Phase 2: Question fades in above the fire 
   await new Promise((resolve) => {
     gsap
       .timeline({ onComplete: resolve })
@@ -171,7 +171,7 @@ async function _runTransition(onComplete, promptText) {
 
   await sleep(900);
 
-  // ── Phase 3: Countdown ────────────────────────────────────
+  //  Phase 3: Countdown 
   gsap.to(countdownEl, { opacity: 1, duration: 0.3 });
 
   for (let n = 3; n >= 1; n--) {
@@ -191,7 +191,7 @@ async function _runTransition(onComplete, promptText) {
 
   await sleep(150);
 
-  // ── Phase 4: Fade out ─────────────────────────────────────
+  //  Phase 4: Fade out 
   await new Promise((resolve) => {
     gsap.to(overlay, {
       opacity: 0,

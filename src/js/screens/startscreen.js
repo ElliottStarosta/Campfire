@@ -57,6 +57,7 @@ function _animateIn() {
       { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "back.out(1.6)" },
       "-=0.2",
     )
+    
 
     // Roster button fades in last
     .fromTo(
@@ -64,7 +65,15 @@ function _animateIn() {
       { opacity: 0, x: 20 },
       { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" },
       "-=0.2",
+    )
+
+    .fromTo(".btn-tutorial",
+      { opacity: 0, x: -20 },
+      { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" },
+      "-=0.2",
     );
+
+    
 
   // Breathing glow on title
   gsap.to(".start-title", {

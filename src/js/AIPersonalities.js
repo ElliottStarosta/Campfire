@@ -126,14 +126,14 @@ Example: ["omg same lol"]`,
   }
 
   _parseResponse(raw) {
-    // ── Step 1: basic cleanup ──────────────────────────────────
+    //  Step 1: basic cleanup 
     let text = raw
       .trim()
       .replace(/```json/gi, "")
       .replace(/```/g, "")
       .trim();
 
-    // ── Step 2: try clean JSON parse first ────────────────────
+    //  Step 2: try clean JSON parse first 
     try {
       const parsed = JSON.parse(text);
       const arr = Array.isArray(parsed) ? parsed : [String(parsed)];
@@ -142,7 +142,7 @@ Example: ["omg same lol"]`,
       // not valid JSON — fall through to extraction
     }
 
-    // ── Step 3: find the FIRST [...] block in the text ────────
+    //  Step 3: find the FIRST [...] block in the text 
     const bracketMatch = text.match(/\[([^\]]+)\]/);
     if (bracketMatch) {
       try {
@@ -154,13 +154,13 @@ Example: ["omg same lol"]`,
       }
     }
 
-    // ── Step 4: extract anything wrapped in quotes ────────────
+    //  Step 4: extract anything wrapped in quotes 
     const quoted = [...text.matchAll(/"([^"]+)"/g)]
       .map((m) => m[1].trim())
       .filter(Boolean);
     if (quoted.length > 0) return this._capAndClean(quoted);
 
-    // ── Step 5: strip common AI prefixes and use raw text ─────
+    //  Step 5: strip common AI prefixes and use raw text 
     // e.g. "Zoe: omg same" or "Here's my response: blah"
     let stripped = text
       .replace(/^(here'?s? (is )?(my )?response:?)/i, "")
@@ -192,7 +192,7 @@ Example: ["omg same lol"]`,
   }
 }
 
-// ── AI PERSONALITIES ────────────────────────────────────────────────────────
+//  AI PERSONALITIES 
 
 class Furry extends AIPersonality {
   constructor() {
@@ -452,7 +452,7 @@ class SarcasticTeenager extends AIPersonality {
   }
 }
 
-// ── CHAT ROOM MANAGER ──────────────────────────────────────────────────────
+//  CHAT ROOM MANAGER 
 
 class ChatRoom {
   constructor(topic, aiPlayers = null) {

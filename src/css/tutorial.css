@@ -1,0 +1,382 @@
+/* ══════════════════════════════════════════════════════════
+   TUTORIAL
+   ══════════════════════════════════════════════════════════ */
+
+.btn-tutorial {
+  position: fixed;
+  bottom: var(--sp-6);
+  left: var(--sp-6);
+  padding: 10px 20px;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  background: var(--bg-glass);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-full);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  transition:
+    color var(--t-base),
+    border-color var(--t-base),
+    transform var(--t-base) var(--ease-spring),
+    box-shadow var(--t-base);
+  z-index: var(--z-raised);
+  opacity: 0;
+}
+
+.btn-tutorial:hover {
+  color: var(--c-amber-1);
+  border-color: var(--border-glow);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(233, 149, 102, 0.2);
+}
+
+.btn-tutorial svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  opacity: 0.7;
+}
+
+/* Backdrop */
+#tutorial-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-modal) + 5);
+  background: rgba(4, 2, 1, 0.92);
+  backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none !important;
+  padding: var(--sp-6);
+  visibility: hidden;
+}
+
+#tutorial-backdrop.active {
+  pointer-events: all !important;
+  visibility: visible;
+}
+
+#tutorial-backdrop.active {
+  pointer-events: all;
+}
+
+/* Modal */
+#tutorial-modal {
+  width: min(500px, 94vw);
+  background: linear-gradient(160deg, #1c1208 0%, #120d06 100%);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  position: relative;
+  box-shadow: var(--shadow-lg), var(--shadow-fire);
+  display: flex;
+  flex-direction: column;
+}
+
+#tutorial-modal::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255, 210, 80, 0.6) 50%,
+    transparent);
+  z-index: 2;
+}
+
+/* Header */
+.tut-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-5) var(--sp-6) var(--sp-4);
+  border-bottom: 1px solid var(--border-faint);
+}
+
+.tut-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--c-teal-2);
+  display: block;
+  margin-bottom: 3px;
+}
+
+.tut-heading {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  color: var(--c-cream-1);
+  text-shadow: 0 0 30px rgba(238, 211, 136, 0.25);
+  line-height: 1.1;
+}
+
+.tut-close {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-full);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-faint);
+  color: var(--text-dim);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background var(--t-base),
+    color var(--t-base),
+    transform var(--t-base) var(--ease-spring);
+  flex-shrink: 0;
+}
+
+.tut-close:hover {
+  background: var(--bg-raised);
+  color: var(--c-cream-1);
+  transform: rotate(90deg) scale(1.1);
+}
+
+/* Slide viewport */
+.tut-viewport {
+  position: relative;
+  overflow: hidden;
+  min-height: 310px;
+  flex: 1;
+}
+
+/* Individual slide */
+.tut-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-5);
+  padding: var(--sp-8) var(--sp-8) var(--sp-6);
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tut-slide.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Icon */
+.tut-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: var(--r-full);
+  background: rgba(239, 181, 118, 0.06);
+  border: 1.5px solid rgba(239, 181, 118, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  box-shadow: 0 0 28px rgba(233, 149, 102, 0.08),
+              inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.tut-icon svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: var(--c-amber-1);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tut-icon::after {
+  content: '';
+  position: absolute;
+  inset: -7px;
+  border-radius: var(--r-full);
+  border: 1px solid rgba(239, 181, 118, 0.1);
+  animation: tutRingPulse 3s ease-in-out infinite;
+}
+
+@keyframes tutRingPulse {
+  0%, 100% { transform: scale(1);    opacity: 0.8; }
+  50%       { transform: scale(1.1); opacity: 0.15; }
+}
+
+.tut-slide-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  color: var(--c-cream-1);
+  text-shadow: 0 0 30px rgba(238, 211, 136, 0.2);
+  line-height: 1.2;
+}
+
+.tut-slide-body {
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-style: italic;
+  font-size: var(--text-base);
+  color: var(--text-dim);
+  line-height: 1.75;
+  max-width: 360px;
+}
+
+.tut-slide-body strong {
+  color: var(--c-amber-1);
+  font-weight: 600;
+  font-style: normal;
+}
+
+/* Pills */
+.tut-pills {
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tut-pill {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  padding: 5px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-full);
+  color: var(--text-dim);
+  background: var(--bg-glass);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.tut-pill.lit {
+  color: var(--c-amber-1);
+  border-color: rgba(239, 181, 118, 0.3);
+  background: rgba(239, 181, 118, 0.06);
+}
+
+/* Footer */
+.tut-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-4) var(--sp-6) var(--sp-5);
+  border-top: 1px solid var(--border-faint);
+  flex-shrink: 0;
+}
+
+/* Arrow buttons */
+.tut-arrow {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-full);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-dim);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background var(--t-base),
+    color var(--t-base),
+    border-color var(--t-base),
+    transform var(--t-base) var(--ease-spring);
+}
+
+.tut-arrow:hover:not(:disabled) {
+  background: var(--bg-raised);
+  color: var(--c-amber-1);
+  border-color: var(--border-glow);
+  transform: scale(1.1);
+}
+
+.tut-arrow:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+.tut-arrow svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+/* Dots */
+.tut-dots {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+}
+
+.tut-dot {
+  height: 7px;
+  width: 7px;
+  border-radius: var(--r-full);
+  background: var(--border-mid);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition:
+    background var(--t-base),
+    width var(--t-base) var(--ease-spring),
+    box-shadow var(--t-base);
+}
+
+.tut-dot.active {
+  background: var(--c-amber-1);
+  width: 22px;
+  box-shadow: 0 0 8px rgba(239, 181, 118, 0.45);
+}
+
+/* CTA on last slide */
+.tut-cta {
+  padding: 11px 32px;
+  background: linear-gradient(135deg,
+    var(--c-cream-1) 0%,
+    var(--c-amber-1) 50%,
+    var(--c-rust-1) 100%);
+  border: none;
+  border-radius: var(--r-full);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--bg-void);
+  cursor: pointer;
+  transition:
+    transform var(--t-base) var(--ease-spring),
+    box-shadow var(--t-base);
+  box-shadow: 0 4px 20px rgba(233, 149, 102, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  right: var(--sp-6);
+}
+
+.tut-cta.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.tut-cta:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 28px rgba(233, 149, 102, 0.5);
+}
+
+@media (max-width: 600px) {
+  .btn-tutorial { bottom: var(--sp-4); left: var(--sp-4); }
+  .tut-slide { padding: var(--sp-6) var(--sp-5) var(--sp-4); gap: var(--sp-4); }
+  .tut-slide-body { font-size: var(--text-sm); }
+}

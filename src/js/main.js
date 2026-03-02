@@ -5,6 +5,7 @@ import "../css/screens.css";
 import "../css/introAdditions.css";
 import "../css/promptReveal.css";
 import "../css/pause.css";
+import "../css/tutorial.css";
 
 import { initEnvironment } from "./environment.js";
 import { initRouter } from "./router.js";
@@ -15,6 +16,7 @@ import { initResultScreen } from "./screens/resultsScreen.js";
 import { initRosterScreen } from "./screens/rosterScreen.js";
 import { initPause } from "./pause.js";
 import { initGlobalButtonSounds, playMP3 } from "./sound.js";
+import { initTutorial } from "./tutorial.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const loader = document.getElementById("page-loader");
@@ -28,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initResultScreen();
   initRosterScreen();
   initPause();
+  initTutorial();
   initGlobalButtonSounds("/audio/buttonClick.mp3", { volume: 0.8 });
 
   // Start ambiance — loops forever throughout the entire game
@@ -62,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Fallback: if transition never fires (e.g. reduced motion), force remove
       setTimeout(() => {
         if (loader.parentNode) loader.remove();
-      }, 800); // slightly longer than the 0.6s CSS transition
+      }, 800);
     });
   });
 });
